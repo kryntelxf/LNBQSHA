@@ -6,12 +6,6 @@ import (
 	"github.com/gofrs/uuid/v5"
 )
 
-type DBTX interface {
-	ExecContext(ctx context.Context, query string, args ...interface{}) (interface{}, error)
-	QueryContext(ctx context.Context, query string, args ...interface{}) (interface{}, error)
-	QueryRowContext(ctx context.Context, query string, args ...interface{}) interface{}
-}
-
 type EconomyRepository interface {
 	GetWalletForUpdate(ctx context.Context, db DBTX, userID uuid.UUID) (*Wallet, error)
 	CreateWallet(ctx context.Context, db DBTX, userID uuid.UUID) error
