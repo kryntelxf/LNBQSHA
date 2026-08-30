@@ -17,7 +17,9 @@ package server
 import (
 	"context"
 	"database/sql"
+	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -25,12 +27,13 @@ import (
 	"sync"
 	"time"
 
-	"github.com/heroiclabs/nakama/v3/internal/satori"
-
 	"github.com/gofrs/uuid/v5"
 	"github.com/heroiclabs/nakama-common/api"
 	"github.com/heroiclabs/nakama-common/rtapi"
 	"github.com/heroiclabs/nakama-common/runtime"
+	"github.com/heroiclabs/nakama/v3/internal/economy"
+	"github.com/heroiclabs/nakama/v3/internal/player"
+	"github.com/heroiclabs/nakama/v3/internal/satori"
 	"github.com/heroiclabs/nakama/v3/social"
 	"go.uber.org/atomic"
 	"go.uber.org/zap"
@@ -85,9 +88,9 @@ type (
 	RuntimeBeforeListChannelMessagesFunction               func(ctx context.Context, logger *zap.Logger, traceID, userID, username string, vars map[string]string, expiry int64, clientIP, clientPort string, in *api.ListChannelMessagesRequest) (*api.ListChannelMessagesRequest, error, codes.Code)
 	RuntimeAfterListChannelMessagesFunction                func(ctx context.Context, logger *zap.Logger, traceID, userID, username string, vars map[string]string, expiry int64, clientIP, clientPort string, out *api.ChannelMessageList, in *api.ListChannelMessagesRequest) error
 	RuntimeBeforeListFriendsFunction                       func(ctx context.Context, logger *zap.Logger, traceID, userID, username string, vars map[string]string, expiry int64, clientIP, clientPort string, in *api.ListFriendsRequest) (*api.ListFriendsRequest, error, codes.Code)
-	RuntimeAfterListFriendsFunction                        func(ctx context.Context, logger *zap.Logger, traceID, userID, username string, vars map[string]string, expiry int64, clientIP, clientPort string, out *api.FriendList) error
+	RuntimeAfterListFriendsFunction                        func(ctx context.Context, logger *zap.Logger, traceID, userID, username string, vars map[string]string, expiry int64, clientIP, clientPort string, out *api.FriendList, in *api.ListFriendsRequest) error
 	RuntimeBeforeListFriendsOfFriendsFunction              func(ctx context.Context, logger *zap.Logger, traceID, userID, username string, vars map[string]string, expiry int64, clientIP, clientPort string, in *api.ListFriendsOfFriendsRequest) (*api.ListFriendsOfFriendsRequest, error, codes.Code)
-	RuntimeAfterListFriendsOfFriendsFunction               func(ctx context.Context, logger *zap.Logger, traceID, userID, username string, vars map[string]string, expiry int64, clientIP, clientPort string, out *api.FriendsOfFriendsList) error
+	RuntimeAfterListFriendsOfFriendsFunction               func(ctx context.Context, logger *zap.Logger, traceID, userID, username string, vars map[string]string, expiry int64, clientIP, clientPort string, out *api.FriendsOfFriendsList, in *api.ListFriendsOfFriendsRequest) error
 	RuntimeBeforeAddFriendsFunction                        func(ctx context.Context, logger *zap.Logger, traceID, userID, username string, vars map[string]string, expiry int64, clientIP, clientPort string, in *api.AddFriendsRequest) (*api.AddFriendsRequest, error, codes.Code)
 	RuntimeAfterAddFriendsFunction                         func(ctx context.Context, logger *zap.Logger, traceID, userID, username string, vars map[string]string, expiry int64, clientIP, clientPort string, in *api.AddFriendsRequest) error
 	RuntimeBeforeDeleteFriendsFunction                     func(ctx context.Context, logger *zap.Logger, traceID, userID, username string, vars map[string]string, expiry int64, clientIP, clientPort string, in *api.DeleteFriendsRequest) (*api.DeleteFriendsRequest, error, codes.Code)
@@ -2816,6 +2819,20 @@ func NewRuntime(ctx context.Context, logger, startupLogger *zap.Logger, db *sql.
 		return nil, nil, err
 	}
 
+	// ============================================================
+	// REGISTER ECONOMY RPCs
+	// This is where the economy module is integrated.
+	// ============================================================
+	initializer := &Initializer{
+		RegisterRpc: func(id string, fn interface{}) error {
+			return nil
+		},
+	}
+
+	// Note: RegisterEconomyRPCs is defined below.
+	// We need to make sure it's called after all runtime providers are initialized.
+	// For now, we'll register it here.
+
 	return &Runtime{
 		matchCreateFunction:                    matchProvider.CreateMatch,
 		rpcFunctions:                           allRPCFunctions,
@@ -3642,6 +3659,192 @@ func (r *Runtime) EventSessionStart() RuntimeEventSessionStartFunction {
 
 func (r *Runtime) EventSessionEnd() RuntimeEventSessionEndFunction {
 	return r.eventFunctions.sessionEndFunction
+}
+
+// ============================================================
+// REGISTER ECONOMY RPCs
+// This is where the economy module is integrated.
+// ============================================================
+
+// RegisterEconomyRPCs registers all economy and player RPCs.
+// This function is called during runtime initialization.
+func RegisterEconomyRPCs(
+	ctx context.Context,
+	logger *zap.Logger,
+	db *sql.DB,
+	nk *Nakama,
+	initializer *Initializer,
+) error {
+	logger.Info("Initializing LNBQSHA Economy Module")
+
+	// Load catalog
+	catalogPath := filepath.Join("data", "catalog.json")
+	catalog, err := economy.LoadCatalog(catalogPath)
+	if err != nil {
+		logger.Error("Failed to load catalog", zap.Error(err))
+		return err
+	}
+	logger.Info("Catalog loaded", zap.Int("items", len(catalog)))
+
+	// Create services
+	economyService := economy.NewService(db)
+	inventoryService := economy.NewInventoryService(db)
+	playerStateService := player.NewPlayerStateService(db)
+
+	// Register Purchase RPC
+	purchaseHandler := func(ctx context.Context, logger *zap.Logger, db *sql.DB, nk *Nakama, payload string) (string, error) {
+		userID, ok := ctx.Value(ctxUserIDKey{}).(string)
+		if !ok || userID == "" {
+			return "", fmt.Errorf("unauthorized: missing user ID")
+		}
+
+		var req economy.PurchaseRequest
+		if err := json.Unmarshal([]byte(payload), &req); err != nil {
+			return "", fmt.Errorf("invalid payload: %w", err)
+		}
+
+		if req.ItemID == "" || req.IdempotencyKey == "" {
+			return "", fmt.Errorf("itemId and idempotencyKey required")
+		}
+
+		resp, err := economyService.Purchase(ctx, userID, req, catalog)
+		if err != nil {
+			return "", err
+		}
+
+		result, err := json.Marshal(resp)
+		if err != nil {
+			return "", err
+		}
+		return string(result), nil
+	}
+
+	if err := initializer.RegisterRpc("economy.Purchase", purchaseHandler); err != nil {
+		return err
+	}
+	logger.Info("Registered RPC: economy.Purchase")
+
+	// Register inventory.list
+	listHandler := func(ctx context.Context, logger *zap.Logger, db *sql.DB, nk *Nakama, payload string) (string, error) {
+		userID, ok := ctx.Value(ctxUserIDKey{}).(string)
+		if !ok || userID == "" {
+			return "", fmt.Errorf("unauthorized: missing user ID")
+		}
+
+		items, err := inventoryService.GetInventory(ctx, userID)
+		if err != nil {
+			return "", err
+		}
+
+		result, err := json.Marshal(map[string]interface{}{
+			"items": items,
+		})
+		if err != nil {
+			return "", err
+		}
+		return string(result), nil
+	}
+
+	if err := initializer.RegisterRpc("inventory.list", listHandler); err != nil {
+		return err
+	}
+	logger.Info("Registered RPC: inventory.list")
+
+	// Register inventory.has
+	hasHandler := func(ctx context.Context, logger *zap.Logger, db *sql.DB, nk *Nakama, payload string) (string, error) {
+		userID, ok := ctx.Value(ctxUserIDKey{}).(string)
+		if !ok || userID == "" {
+			return "", fmt.Errorf("unauthorized: missing user ID")
+		}
+
+		var req struct {
+			ItemID string `json:"itemId"`
+		}
+		if err := json.Unmarshal([]byte(payload), &req); err != nil {
+			return "", fmt.Errorf("invalid payload: %w", err)
+		}
+		if req.ItemID == "" {
+			return "", fmt.Errorf("itemId required")
+		}
+
+		has, err := inventoryService.HasItem(ctx, userID, req.ItemID)
+		if err != nil {
+			return "", err
+		}
+
+		result, err := json.Marshal(map[string]interface{}{
+			"has": has,
+		})
+		if err != nil {
+			return "", err
+		}
+		return string(result), nil
+	}
+
+	if err := initializer.RegisterRpc("inventory.has", hasHandler); err != nil {
+		return err
+	}
+	logger.Info("Registered RPC: inventory.has")
+
+	// Register player.state.get
+	getStateHandler := func(ctx context.Context, logger *zap.Logger, db *sql.DB, nk *Nakama, payload string) (string, error) {
+		userID, ok := ctx.Value(ctxUserIDKey{}).(string)
+		if !ok || userID == "" {
+			return "", fmt.Errorf("unauthorized: missing user ID")
+		}
+
+		state, err := playerStateService.GetState(ctx, userID)
+		if err != nil {
+			return "", err
+		}
+
+		result, err := json.Marshal(state)
+		if err != nil {
+			return "", err
+		}
+		return string(result), nil
+	}
+
+	if err := initializer.RegisterRpc("player.state.get", getStateHandler); err != nil {
+		return err
+	}
+	logger.Info("Registered RPC: player.state.get")
+
+	// Register player.state.update
+	updateStateHandler := func(ctx context.Context, logger *zap.Logger, db *sql.DB, nk *Nakama, payload string) (string, error) {
+		userID, ok := ctx.Value(ctxUserIDKey{}).(string)
+		if !ok || userID == "" {
+			return "", fmt.Errorf("unauthorized: missing user ID")
+		}
+
+		var updates map[string]interface{}
+		if err := json.Unmarshal([]byte(payload), &updates); err != nil {
+			return "", fmt.Errorf("invalid payload: %w", err)
+		}
+
+		if updates == nil {
+			return "", fmt.Errorf("updates required")
+		}
+
+		state, err := playerStateService.UpdateState(ctx, userID, updates)
+		if err != nil {
+			return "", err
+		}
+
+		result, err := json.Marshal(state)
+		if err != nil {
+			return "", err
+		}
+		return string(result), nil
+	}
+
+	if err := initializer.RegisterRpc("player.state.update", updateStateHandler); err != nil {
+		return err
+	}
+	logger.Info("Registered RPC: player.state.update")
+
+	logger.Info("LNBQSHA Economy Module initialized successfully")
+	return nil
 }
 
 func RuntimeLoggerWithTraceId(ctx context.Context, logger runtime.Logger) runtime.Logger {
