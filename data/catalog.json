@@ -1,0 +1,18 @@
+{
+  "cosmetic_001": {
+    "id": "cosmetic_001",
+    "name": "Neon Skin",
+    "description": "Glow in the dark with neon style",
+    "price": 500,
+    "currency": "soft",
+    "type": "skin"
+  },
+  "cosmetic_002": {
+    "id": "cosmetic_002",
+    "name": "Golden Skin",
+    "description": "Shine like gold",
+    "price": 1000,
+    "currency": "premium",
+    "type": "skin"
+  }
+}
