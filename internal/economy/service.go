@@ -21,6 +21,12 @@ func NewService(db *sql.DB) *Service {
 	}
 }
 
+func NewServiceWithRepo(repo EconomyRepository) *Service {
+	return &Service{
+		repo: repo,
+	}
+}
+
 func (s *Service) Purchase(
 	ctx context.Context,
 	userID string,
@@ -62,7 +68,11 @@ func (s *Service) Purchase(
 	if err != nil {
 		return nil, fmt.Errorf("%w: %v", ErrInternalError, err)
 	}
-	defer tx.Rollback()
+	defer func() {
+		if err := tx.Rollback(); err != nil && err != sql.ErrTxDone {
+			// Rollback error ignored
+		}
+	}()
 
 	existing, err := s.repo.GetIdempotency(ctx, tx, req.IdempotencyKey, userUUID)
 	if err != nil {
