@@ -70,7 +70,7 @@ func (s *Service) Purchase(
 	}
 	defer func() {
 		if err := tx.Rollback(); err != nil && err != sql.ErrTxDone {
-			// Rollback error ignored
+			// Ignore rollback error
 		}
 	}()
 
