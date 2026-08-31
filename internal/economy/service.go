@@ -68,11 +68,7 @@ func (s *Service) Purchase(
 	if err != nil {
 		return nil, fmt.Errorf("%w: %v", ErrInternalError, err)
 	}
-	defer func() {
-		if err := tx.Rollback(); err != nil && err != sql.ErrTxDone {
-			// Ignore rollback error
-		}
-	}()
+	defer tx.Rollback()
 
 	existing, err := s.repo.GetIdempotency(ctx, tx, req.IdempotencyKey, userUUID)
 	if err != nil {
