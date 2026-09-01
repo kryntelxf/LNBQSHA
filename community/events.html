@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LNBQSHA Community — Events</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #05050a;
+            color: #e0e0e0;
+            line-height: 1.6;
+        }
+        .header {
+            padding: 20px 32px;
+            border-bottom: 1px solid #1a1a2e;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .header .logo { font-size: 20px; font-weight: 700; color: #7c3aed; }
+        .header .logo span { color: #e0e0e0; }
+        .header .back { color: #666; text-decoration: none; font-size: 14px; }
+        .header .back:hover { color: #a78bfa; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 32px 20px; }
+        .event-card {
+            background: #0f0f1a;
+            border: 1px solid #1a1a2e;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+            display: flex;
+            gap: 24px;
+            align-items: flex-start;
+        }
+        .event-card:hover { border-color: #2a2a3e; }
+        .event-card .date {
+            min-width: 80px;
+            text-align: center;
+            background: #1a1a2e;
+            border-radius: 12px;
+            padding: 12px 16px;
+        }
+        .event-card .date .day { font-size: 28px; font-weight: 700; color: #7c3aed; }
+        .event-card .date .month { font-size: 14px; color: #666; text-transform: uppercase; }
+        .event-card .info { flex: 1; }
+        .event-card .info h3 { font-size: 18px; font-weight: 600; margin-bottom: 4px; }
+        .event-card .info .meta { color: #666; font-size: 14px; margin-bottom: 8px; }
+        .event-card .info .meta span { margin-right: 16px; }
+        .event-card .info .desc { color: #888; font-size: 14px; }
+        .event-card .info .tags { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+        .event-card .info .tags .tag {
+            padding: 2px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .tag-tournament { background: #7f1d1d; color: #f87171; }
+        .tag-community { background: #1e3a5f; color: #60a5fa; }
+        .tag-game { background: #064e3b; color: #34d399; }
+        .tag-special { background: #78350f; color: #fbbf24; }
+        .event-card .action { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; }
+        .btn-primary {
+            padding: 10px 24px;
+            background: linear-gradient(135deg, #7c3aed, #6d28d9);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-primary:hover { transform: scale(1.02); box-shadow: 0 0 30px rgba(124,58,237,0.3); }
+        .btn-secondary {
+            padding: 10px 24px;
+            background: transparent;
+            color: #e0e0e0;
+            border: 1px solid #333;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-secondary:hover { border-color: #7c3aed; color: #a78bfa; }
+        .event-filters { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 24px; }
+        .event-filters button {
+            padding: 8px 20px;
+            background: #0f0f1a;
+            border: 1px solid #1a1a2e;
+            border-radius: 20px;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 13px;
+        }
+        .event-filters button:hover { border-color: #7c3aed; color: #e0e0e0; }
+        .event-filters button.active { background: #7c3aed; border-color: #7c3aed; color: #fff; }
+        @media (max-width: 768px) {
+            .header { padding: 16px; flex-direction: column; align-items: stretch; text-align: center; }
+            .event-card { flex-direction: column; align-items: stretch; }
+            .event-card .action { flex-direction: row; align-items: center; justify-content: flex-end; }
+            .event-card .date { display: flex; align-items: center; gap: 16px; }
+            .event-card .date .day { font-size: 20px; }
+        }
+        @media (max-width: 480px) {
+            .event-filters { justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">📅 <span>LNBQSHA</span> <span style="font-size:14px;color:#666;font-weight:400;">Events</span></div>
+        <a href="../metaverse/world.html" class="back">← Back to World</a>
+    </header>
+
+    <div class="container">
+        <div class="event-filters">
+            <button class="active">All</button>
+            <button>Tournaments</button>
+            <button>Community</button>
+            <button>Game Updates</button>
+            <button>Special</button>
+        </div>
+
+        <div id="eventsContainer">
+            <!-- Events rendered by JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        const events = [
+            { title: '🏆 Weekly Tournament — Obstacle Rush', type: 'tournament', date: 'Sep 5, 2026', time: '3:00 PM UTC', desc: 'Compete in the weekly Obstacle Rush tournament. Top 3 win prizes!', tags: ['tournament', 'game'], players: 156 },
+            { title: '🎮 Game Jam — Build a Game in 48 Hours', type: 'community', date: 'Sep 10, 2026', time: '12:00 PM UTC', desc: 'Join the community game jam. Create a game and win prizes.', tags: ['community', 'game'], players: 89 },
+            { title: '✨ LNBQSHA Metaverse Launch Party', type: 'special', date: 'Sep 15, 2026', time: '6:00 PM UTC', desc: 'Celebrate the launch of the LNBQSHA Metaverse with special events and giveaways!', tags: ['special', 'community'], players: 340 },
+            { title: '🏆 Monthly Tournament — Block Battle', type: 'tournament', date: 'Sep 20, 2026', time: '4:00 PM UTC', desc: 'The monthly Block Battle tournament. Show your skills!', tags: ['tournament', 'game'], players: 234 },
+            { title: '🛠️ Developer Workshop — Building with SDK', type: 'community', date: 'Sep 25, 2026', time: '5:00 PM UTC', desc: 'Learn how to build games on LNBQSHA using the TypeScript SDK.', tags: ['community', 'development'], players: 67 },
+        ];
+
+        function renderEvents() {
+            const container = document.getElementById('eventsContainer');
+            container.innerHTML = events.map(event => `
+                <div class="event-card">
+                    <div class="date">
+                        <div class="day">${event.date.split(' ')[1]}</div>
+                        <div class="month">${event.date.split(' ')[0]}</div>
+                    </div>
+                    <div class="info">
+                        <h3>${event.title}</h3>
+                        <div class="meta">
+                            <span>📅 ${event.date}</span>
+                            <span>🕐 ${event.time}</span>
+                            <span>👤 ${event.players} attending</span>
+                        </div>
+                        <div class="desc">${event.desc}</div>
+                        <div class="tags">
+                            ${event.tags.map(tag => `<span class="tag tag-${tag}">${tag}</span>`).join('')}
+                        </div>
+                    </div>
+                    <div class="action">
+                        <button class="btn-primary">Join Event</button>
+                        <button class="btn-secondary">Remind</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        renderEvents();
+    </script>
+</body>
+</html>
