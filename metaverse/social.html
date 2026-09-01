@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LNBQSHA Metaverse — Social Hub</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #05050a;
+            color: #e0e0e0;
+            min-height: 100vh;
+        }
+        .header {
+            padding: 24px 32px;
+            border-bottom: 1px solid #1a1a2e;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header .logo { font-size: 20px; font-weight: 700; color: #7c3aed; }
+        .header .logo span { color: #e0e0e0; }
+        .header .back { color: #666; text-decoration: none; font-size: 14px; }
+        .header .back:hover { color: #a78bfa; }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 32px 20px;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 32px;
+        }
+        .section { background: #0a0a12; border: 1px solid #1a1a2e; border-radius: 16px; padding: 24px; }
+        .section h2 { font-size: 18px; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+        .section h2 .badge { font-size: 12px; background: #1a1a2e; padding: 2px 10px; border-radius: 12px; color: #666; }
+        .friend-list { display: flex; flex-direction: column; gap: 12px; }
+        .friend-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: #0f0f1a;
+            border-radius: 12px;
+            border: 1px solid transparent;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .friend-item:hover { border-color: #1a1a2e; }
+        .friend-item .avatar { font-size: 28px; width: 40px; text-align: center; }
+        .friend-item .info { flex: 1; }
+        .friend-item .info .name { font-size: 14px; font-weight: 500; }
+        .friend-item .info .status { font-size: 12px; color: #666; }
+        .friend-item .info .status.online { color: #34d399; }
+        .friend-item .info .status.playing { color: #fbbf24; }
+        .friend-item .info .status.offline { color: #f87171; }
+        .friend-item .action button {
+            padding: 4px 12px;
+            background: #1a1a2e;
+            border: none;
+            border-radius: 6px;
+            color: #999;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .friend-item .action button:hover { background: #7c3aed; color: #fff; }
+        .chat-box {
+            display: flex;
+            flex-direction: column;
+            height: 400px;
+        }
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .chat-messages .msg {
+            padding: 8px 14px;
+            background: #0f0f1a;
+            border-radius: 12px;
+            max-width: 80%;
+            font-size: 14px;
+        }
+        .chat-messages .msg.sent { align-self: flex-end; background: #1a1a2e; }
+        .chat-messages .msg .sender { font-size: 11px; color: #7c3aed; font-weight: 600; margin-bottom: 2px; }
+        .chat-messages .msg .time { font-size: 10px; color: #444; margin-left: 8px; }
+        .chat-input {
+            display: flex;
+            gap: 12px;
+            margin-top: 12px;
+        }
+        .chat-input input {
+            flex: 1;
+            padding: 10px 16px;
+            background: #0f0f1a;
+            border: 1px solid #1a1a2e;
+            border-radius: 10px;
+            color: #e0e0e0;
+            font-size: 14px;
+        }
+        .chat-input input:focus { outline: none; border-color: #7c3aed; }
+        .chat-input button {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #7c3aed, #6d28d9);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .chat-input button:hover { transform: scale(1.05); }
+        .party-list { display: flex; flex-direction: column; gap: 12px; }
+        .party-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: #0f0f1a;
+            border-radius: 12px;
+            border: 1px solid #1a1a2e;
+        }
+        .party-item .info .name { font-size: 14px; font-weight: 500; }
+        .party-item .info .members { font-size: 12px; color: #666; }
+        .party-item .action button { padding: 4px 12px; background: #7c3aed; border: none; border-radius: 6px; color: #fff; font-size: 12px; cursor: pointer; }
+        .party-item .action button:hover { background: #6d28d9; }
+        @media (max-width: 768px) {
+            .container { grid-template-columns: 1fr; }
+            .header { padding: 16px; flex-direction: column; gap: 8px; text-align: center; }
+            .chat-box { height: 300px; }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">LNB<span>QSHA</span> <span style="font-size:14px;color:#666;font-weight:400;">Social Hub</span></div>
+        <a href="world.html" class="back">← Back to World</a>
+    </header>
+
+    <div class="container">
+        <div>
+            <div class="section">
+                <h2>💬 Friends <span class="badge" id="friendCount">0 online</span></h2>
+                <div class="friend-list" id="friendList">
+                    <div class="friend-item">
+                        <div class="avatar">🧑</div>
+                        <div class="info">
+                            <div class="name">PlayerOne</div>
+                            <div class="status online">● Online</div>
+                        </div>
+                        <div class="action"><button>💬</button></div>
+                    </div>
+                    <div class="friend-item">
+                        <div class="avatar">🧙</div>
+                        <div class="info">
+                            <div class="name">GameMaster</div>
+                            <div class="status playing">▶ Playing</div>
+                        </div>
+                        <div class="action"><button>💬</button></div>
+                    </div>
+                    <div class="friend-item">
+                        <div class="avatar">🦸</div>
+                        <div class="info">
+                            <div class="name">Heroic</div>
+                            <div class="status online">● Online</div>
+                        </div>
+                        <div class="action"><button>💬</button></div>
+                    </div>
+                    <div class="friend-item">
+                        <div class="avatar">🧝</div>
+                        <div class="info">
+                            <div class="name">Shadow</div>
+                            <div class="status offline">○ Offline</div>
+                        </div>
+                        <div class="action"><button>💬</button></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section" style="margin-top:24px;">
+                <h2>💬 Chat</h2>
+                <div class="chat-box">
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="msg"><div class="sender">PlayerOne</div>Hey everyone! 👋</div>
+                        <div class="msg sent"><div class="sender">You</div>Hello! Ready to play?</div>
+                        <div class="msg"><div class="sender">GameMaster</div>Game starting in 5 minutes!</div>
+                        <div class="msg"><div class="sender">Heroic</div>I'm in! Let's do this! 🔥</div>
+                    </div>
+                    <div class="chat-input">
+                        <input type="text" placeholder="Type a message..." id="chatInput">
+                        <button onclick="sendMessage()">Send</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <div class="section">
+                <h2>🎮 Party</h2>
+                <div class="party-list">
+                    <div class="party-item">
+                        <div style="font-size:24px;">👥</div>
+                        <div class="info">
+                            <div class="name">Squad Alpha</div>
+                            <div class="members">4/6 members • Playing Obstacle Rush</div>
+                        </div>
+                        <div class="action"><button>Join</button></div>
+                    </div>
+                    <div class="party-item">
+                        <div style="font-size:24px;">👥</div>
+                        <div class="info">
+                            <div class="name">Arena Kings</div>
+                            <div class="members">3/6 members • Tournament mode</div>
+                        </div>
+                        <div class="action"><button>Join</button></div>
+                    </div>
+                    <div class="party-item">
+                        <div style="font-size:24px;">👤</div>
+                        <div class="info">
+                            <div class="name">Solo Queue</div>
+                            <div class="members">1/6 members • Waiting for players</div>
+                        </div>
+                        <div class="action"><button>Join</button></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section" style="margin-top:24px;">
+                <h2>🔥 Activity Feed</h2>
+                <div style="display:flex;flex-direction:column;gap:8px;font-size:14px;color:#888;">
+                    <div>🎮 PlayerOne started a match</div>
+                    <div>🏆 Heroic won a tournament</div>
+                    <div>🆕 New game: Block Battle released!</div>
+                    <div>👥 GameMaster created a party</div>
+                    <div>⭐ Shadow reached level 10</div>
+                    <div>💰 PlayerOne earned 500 coins</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const msg = input.value.trim();
+            if (!msg) return;
+            const container = document.getElementById('chatMessages');
+            const div = document.createElement('div');
+            div.className = 'msg sent';
+            div.innerHTML = `<div class="sender">You <span class="time">now</span></div>${msg}`;
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
+            input.value = '';
+        }
+
+        document.getElementById('chatInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+    </script>
+</body>
+  </html>
