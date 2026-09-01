@@ -1,202 +1,179 @@
 
 ```markdown
-# 🌐 LNBQSHA Ecosystem
+# 🌐 LNBQSHA — The Global Social Game Universe
 
-LNBQSHA is not a single product — it's an **ecosystem** of interconnected platforms that together form the **Global Social Game Universe**.
+**LNBQSHA** is the world's first complete platform that combines gaming, social networking, creation, AI, and Web3 into one unified experience.
 
 ---
 
-## 🏗️ Ecosystem Architecture
+## 🚀 Quick Links
+
+- **🌍 Metaverse:** [Enter the World](https://lnbqsha.com/metaverse/world.html)
+- **🎮 Arcade:** [Play Games](https://lnbqsha.com/arcade/)
+- **🛠️ Studio:** [Create Games](https://lnbqsha.com/studio/)
+- **📊 Dashboard:** [Admin Panel](https://lnbqsha.com/dashboard.html)
+- **📖 Documentation:** [Read Docs](https://lnbqsha.com/docs/)
+
+---
+
+## 📊 By The Numbers
+
+| Metric | Value |
+|--------|-------|
+| **RPC Endpoints** | 156 |
+| **Backend Modules** | 30 |
+| **Web Interfaces** | 6 |
+| **AI Features** | 3 |
+| **Metaverse Worlds** | 1 (Growing) |
+| **Lines of Code** | 50,000+ |
+
+---
+
+## 🎮 Features
+
+### 🎯 Backend (30 Modules, 156 RPC)
+- **Economy** — Wallet, purchase, shop
+- **Social** — Friends, parties, clans, chat
+- **Progression** — Level, XP, achievements, quests
+- **Game** — Obstacle Rush, matchmaking, leaderboards
+- **Tournament** — Create, join, compete, win
+- **Battle Pass** — Season pass, tiers, rewards
+- **Daily Login** — Calendar, streak, rewards
+- **Referral** — Invite friends, earn rewards
+- **Admin** — Moderation, user management, grants
+- **Analytics** — User tracking, retention, metrics
+- **CMS** — Content management, announcements
+- **AI** — Game Master, content generator, smart matchmaker
+- **Web3** — Wallet connector, on-chain achievements
+
+### 🧠 AI-Powered
+- **AI Game Master** — NPC players that chat and play
+- **AI Content Generator** — Auto-generate quests, achievements, events
+- **AI Smart Matchmaker** — Skill-based player matching
+
+### 🌍 Metaverse (3D World)
+- **3D World** — Real-time 3D environment with Three.js
+- **Avatar Studio** — Customize your avatar
+- **Social Hub** — Friends, chat, party system
+
+### 💎 Web3
+- **Wallet Connector** — Connect MetaMask, WalletConnect
+- **On-Chain Achievements** — NFT achievements on blockchain
+
+---
+
+## 🏗️ Architecture
 
 ```
 
-┌─────────────────────────────────────────────────────────────────────┐
-│                         LNBQSHA ECOSYSTEM                          │
-├─────────────────────────────────────────────────────────────────────┤
-│                                                                     │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐             │
-│  │   LNBQSHA    │  │   LNBQSHA    │  │   LNBQSHA    │             │
-│  │   Platform   │  │    Studio    │  │    Arcade    │             │
-│  │   (Core)     │  │  (Creators)  │  │  (Players)   │             │
-│  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘             │
-│         │                 │                 │                     │
-│         └─────────────────┼─────────────────┘                     │
-│                           │                                       │
-│                    ┌──────▼──────┐                                │
-│                    │  LNBQSHA    │                                │
-│                    │  Network    │                                │
-│                    │  (API)      │                                │
-│                    └──────┬──────┘                                │
-│                           │                                       │
-│         ┌─────────────────┼─────────────────┐                     │
-│         │                 │                 │                     │
-│  ┌──────▼──────┐  ┌──────▼──────┐  ┌──────▼──────┐             │
-│  │  Web3       │  │  Mobile     │  │  Desktop    │             │
-│  │  Integration│  │  (iOS/Android)│  │  (PC/Mac)   │             │
-│  └─────────────┘  └─────────────┘  └─────────────┘             │
-│                                                                     │
-└─────────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────┐
+│                    LNBQSHA PLATFORM                             │
+├─────────────────────────────────────────────────────────────────┤
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐            │
+│  │  Metaverse  │  │   Arcade    │  │   Studio    │            │
+│  │   (3D)      │  │   (Games)   │  │  (Create)   │            │
+│  └─────────────┘  └─────────────┘  └─────────────┘            │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │                    AI Layer                             │    │
+│  │  Game Master  │  Content Generator  │  Smart Matchmaker │    │
+│  └─────────────────────────────────────────────────────────┘    │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │                  Backend Layer                          │    │
+│  │  156 RPC  │  30 Modules  │  Web3  │  Analytics  │  CMS  │    │
+│  └─────────────────────────────────────────────────────────┘    │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │                Infrastructure Layer                     │    │
+│  │  Nakama Cluster  │  PostgreSQL  │  Redis  │  RabbitMQ   │    │
+│  └─────────────────────────────────────────────────────────┘    │
+└─────────────────────────────────────────────────────────────────┘
 
 ```
 
 ---
 
-## 🧩 Ecosystem Components
+## 🛠️ Development
 
-### 1. LNBQSHA Platform (Core)
-**The Foundation**
+### Prerequisites
+- Go 1.26.5+
+- Node.js 18+
+- Docker & Docker Compose
+- PostgreSQL 16+
 
-- 27 backend modules
-- 141 RPC endpoints
-- Authentication & user management
-- Economy & wallet system
-- Social graph & chat
-- Game engine & matchmaking
-- Leaderboards & tournaments
-- Analytics & monitoring
+### Clone & Install
 
-**Tech Stack:** Nakama, PostgreSQL, TypeScript, Go
+```bash
+git clone https://github.com/kryntelxf/LNBQSHA.git
+cd LNBQSHA
+npm install
+```
 
----
+Run Locally
 
-### 2. LNBQSHA Studio (Creator Platform)
-**Build Games & Worlds**
+```bash
+# Start all services
+docker-compose -f docker-compose.yml up -d
 
-- Game builder (visual + code)
-- World editor
-- Asset marketplace
-- Monetization tools
-- Community management
-- Analytics dashboard
-- Publishing pipeline
+# Or using the deployment script
+./scripts/deploy.sh
+```
 
-**Status:** 🚧 In Development
+Run Tests
 
----
-
-### 3. LNBQSHA Arcade (Player Portal)
-**Play Games**
-
-- Game discovery
-- Quick play
-- Matchmaking
-- Leaderboards
-- Friend & party system
-- Player profiles
-- Achievements & quests
-
-**Status:** 🚧 In Development
+```bash
+go test ./...
+```
 
 ---
 
-### 4. LNBQSHA Network (Infrastructure)
-**Connect Everything**
+📚 Documentation
 
-- API Gateway
-- Service discovery
-- Load balancing
-- Caching layer
-- Message queue
-- Event streaming
-- Monitoring & alerting
-
-**Status:** ✅ Operational
+· API Reference: https://lnbqsha.com/docs/api
+· SDK Guide: https://lnbqsha.com/docs/sdk
+· Game Development: https://lnbqsha.com/docs/games
+· Metaverse Guide: https://lnbqsha.com/docs/metaverse
 
 ---
 
-### 5. Web3 Integration
-**Player-Owned Identity**
+🤝 Contributing
 
-- Wallet connection
-- On-chain achievements
-- NFT items & cosmetics
-- Cross-game interoperability
-- Decentralized identity
+We welcome contributions! Please read our Contributing Guide.
 
-**Status:** 🚧 In Development
-
----
-
-### 6. Mobile & Desktop
-**Play Anywhere**
-
-- iOS app
-- Android app
-- Web app (PWA)
-- Desktop app (Electron)
-
-**Status:** ⏳ Planned
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Push to the branch
+5. Open a Pull Request
 
 ---
 
-## 📊 Ecosystem Metrics
+📄 License
 
-| Metric | Current | Target (Q1 2027) |
-|--------|---------|-----------------|
-| **Modules** | 27 | 50+ |
-| **RPC Endpoints** | 141 | 300+ |
-| **Games** | 1 | 20+ |
-| **Creators** | 0 | 1,000+ |
-| **Players** | 0 | 100,000+ |
-| **Daily Active Users** | 0 | 10,000+ |
-| **Monthly Revenue** | $0 | $100,000+ |
+Apache 2.0
 
 ---
 
-## 🗺️ Ecosystem Roadmap
+🌟 Join the Movement
 
-### Phase 1: Foundation (Q3 2026) ✅
-- ✅ Core platform
-- ✅ 27 modules
-- ✅ 141 RPC endpoints
-- ✅ Web dashboard
-- ✅ TypeScript SDK
-- ✅ Community hub
+LNBQSHA is more than a platform. It's a movement.
 
-### Phase 2: Creator Economy (Q4 2026) 🚧
-- 🚧 LNBQSHA Studio
-- 🚧 Asset marketplace
-- 🚧 Creator monetization
-- 🚧 User-generated content
+· 🎮 Players: Play, connect, and compete
+· 🛠️ Creators: Build games and earn
+· 👨‍💻 Developers: Build on our platform
+· 🤝 Investors: Join the journey
 
-### Phase 3: Mobile Launch (Q1 2027) ⏳
-- ⏳ iOS app
-- ⏳ Android app
-- ⏳ Mobile SDK
-- ⏳ Push notifications
-
-### Phase 4: Scale & Grow (Q2 2027) ⏳
-- ⏳ 1M players
-- ⏳ 100+ games
-- ⏳ 10K+ creators
-- ⏳ Global expansion
-
-### Phase 5: Web3 & DAO (Q3 2027) ⏳
-- ⏳ Full Web3 integration
-- ⏳ DAO governance
-- ⏳ Token economy
-- ⏳ Cross-chain interoperability
+#LNBQSHA #SocialGameUniverse #Metaverse #Web3 #AI
 
 ---
 
-## 🔗 Ecosystem Links
+📞 Contact
 
-- **Main Platform:** https://lnbqsha.com
-- **Studio:** https://studio.lnbqsha.com
-- **Arcade:** https://arcade.lnbqsha.com
-- **Docs:** https://docs.lnbqsha.com
-- **GitHub:** https://github.com/kryntelxf/LNBQSHA
+· Website: https://lnbqsha.com
+· GitHub: https://github.com/kryntelxf/LNBQSHA
+· Discord: https://discord.gg/lnbqsha
+· Email: hello@lnbqsha.com
 
 ---
 
-## 💬 Join the Ecosystem
+🚀 LNBQSHA is ready for production! Built with ❤️ for the world.
 
-LNBQSHA is building the future of social gaming. Be part of it:
-
-- **Players:** Play, connect, and compete
-- **Creators:** Build games and earn
-- **Developers:** Build on our platform
-- **Investors:** Join the journey
-
-**#LNBQSHA #SocialGameUniverse #Ecosystem**
 ```
