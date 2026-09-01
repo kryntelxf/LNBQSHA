@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LNBQSHA Community — Creators</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #05050a;
+            color: #e0e0e0;
+            line-height: 1.6;
+        }
+        .header {
+            padding: 20px 32px;
+            border-bottom: 1px solid #1a1a2e;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .header .logo { font-size: 20px; font-weight: 700; color: #7c3aed; }
+        .header .logo span { color: #e0e0e0; }
+        .header .back { color: #666; text-decoration: none; font-size: 14px; }
+        .header .back:hover { color: #a78bfa; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 32px 20px; }
+        .creators-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
+        .creator-card {
+            background: #0f0f1a;
+            border: 1px solid #1a1a2e;
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        .creator-card:hover { transform: translateY(-4px); border-color: #7c3aed; box-shadow: 0 8px 40px rgba(124,58,237,0.1); }
+        .creator-card .avatar { font-size: 48px; margin-bottom: 12px; }
+        .creator-card .name { font-size: 16px; font-weight: 600; }
+        .creator-card .title { font-size: 13px; color: #666; }
+        .creator-card .stats { display: flex; justify-content: center; gap: 16px; margin: 12px 0; font-size: 13px; color: #555; }
+        .creator-card .stats span { display: flex; align-items: center; gap: 4px; }
+        .creator-card .tags { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; margin-bottom: 12px; }
+        .creator-card .tags .tag {
+            padding: 2px 10px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .tag-game { background: #064e3b; color: #34d399; }
+        .tag-art { background: #1e3a5f; color: #60a5fa; }
+        .tag-code { background: #7f1d1d; color: #f87171; }
+        .tag-music { background: #78350f; color: #fbbf24; }
+        .btn-primary {
+            padding: 8px 20px;
+            background: linear-gradient(135deg, #7c3aed, #6d28d9);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-primary:hover { transform: scale(1.02); box-shadow: 0 0 20px rgba(124,58,237,0.3); }
+        .btn-secondary {
+            padding: 8px 20px;
+            background: transparent;
+            color: #e0e0e0;
+            border: 1px solid #333;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-secondary:hover { border-color: #7c3aed; color: #a78bfa; }
+        .creator-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 24px; }
+        .creator-header h2 { font-size: 24px; font-weight: 700; }
+        .creator-header .actions { display: flex; gap: 12px; }
+        @media (max-width: 768px) {
+            .header { padding: 16px; flex-direction: column; align-items: stretch; text-align: center; }
+            .creator-header { flex-direction: column; align-items: stretch; }
+            .creator-header .actions { justify-content: center; }
+            .creators-grid { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 480px) {
+            .creators-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">🎨 <span>LNBQSHA</span> <span style="font-size:14px;color:#666;font-weight:400;">Creators</span></div>
+        <a href="../metaverse/world.html" class="back">← Back to World</a>
+    </header>
+
+    <div class="container">
+        <div class="creator-header">
+            <h2>🌟 Featured Creators</h2>
+            <div class="actions">
+                <button class="btn-secondary">Apply to Create</button>
+                <button class="btn-primary">+ Follow</button>
+            </div>
+        </div>
+
+        <div class="creators-grid" id="creatorsGrid">
+            <!-- Creators rendered by JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        const creators = [
+            { name: 'GameMaster', avatar: '🧙', title: 'Game Developer', games: 12, followers: 234, tags: ['game', 'code'] },
+            { name: 'NeonArtist', avatar: '🎨', title: '3D Artist', games: 5, followers: 189, tags: ['art'] },
+            { name: 'CodeWizard', avatar: '🧑‍💻', title: 'Full Stack Dev', games: 8, followers: 156, tags: ['code', 'game'] },
+            { name: 'MusicMaker', avatar: '🎵', title: 'Composer', games: 3, followers: 98, tags: ['music'] },
+            { name: 'PixelPioneer', avatar: '🖌️', title: 'Pixel Artist', games: 6, followers: 134, tags: ['art', 'game'] },
+            { name: 'LevelDesigner', avatar: '🏗️', title: 'Level Designer', games: 10, followers: 201, tags: ['game'] },
+            { name: 'SoundSorcerer', avatar: '🔊', title: 'Audio Engineer', games: 4, followers: 67, tags: ['music'] },
+            { name: 'Storyteller', avatar: '📖', title: 'Narrative Designer', games: 7, followers: 112, tags: ['game'] },
+        ];
+
+        function renderCreators() {
+            const grid = document.getElementById('creatorsGrid');
+            grid.innerHTML = creators.map(creator => `
+                <div class="creator-card">
+                    <div class="avatar">${creator.avatar}</div>
+                    <div class="name">${creator.name}</div>
+                    <div class="title">${creator.title}</div>
+                    <div class="stats">
+                        <span>🎮 ${creator.games}</span>
+                        <span>👥 ${creator.followers}</span>
+                    </div>
+                    <div class="tags">
+                        ${creator.tags.map(tag => `<span class="tag tag-${tag}">${tag}</span>`).join('')}
+                    </div>
+                    <button class="btn-primary" style="width:100%;">Follow</button>
+                </div>
+            `).join('');
+        }
+
+        renderCreators();
+    </script>
+</body>
+</html>
