@@ -1,0 +1,169 @@
+# ============================================================
+# LNBQSHA — Growth & Marketing Automation
+# Scale to 1 million users
+# ============================================================
+
+# ============================================================
+# REFERRAL PROGRAM
+# ============================================================
+
+referral:
+  enabled: true
+  rewards:
+    inviter:
+      xp: 100
+      coins: 100
+      gems: 10
+    invitee:
+      xp: 50
+      coins: 50
+      gems: 5
+  tiers:
+    bronze: 5 invites
+    silver: 25 invites
+    gold: 100 invites
+    platinum: 500 invites
+    diamond: 1000 invites
+
+# ============================================================
+# DAILY REWARDS
+# ============================================================
+
+daily_rewards:
+  enabled: true
+  calendar:
+    1: "100 XP"
+    2: "50 Coins"
+    3: "5 Gems"
+    4: "100 XP"
+    5: "100 Coins"
+    6: "10 Gems"
+    7: "200 XP + 50 Coins"
+    14: "Skin: Neon"
+    21: "Emote: Dance"
+    28: "Avatar: Crown"
+    30: "30 Gems + Legendary Chest"
+
+# ============================================================
+# SEASON PASS
+# ============================================================
+
+season_pass:
+  enabled: true
+  cost: 1000
+  currency: premium
+  duration: 30 days
+  tiers: 50
+  rewards:
+    free:
+      - "XP Boost"
+      - "Coins"
+      - "Daily Rewards"
+    premium:
+      - "Exclusive Skins"
+      - "Rare Emotes"
+      - "Legendary Avatars"
+      - "Bonus XP"
+      - "Special Titles"
+
+# ============================================================
+# PUSH NOTIFICATIONS
+# ============================================================
+
+push_notifications:
+  enabled: true
+  templates:
+    daily_login:
+      title: "🎁 Daily Reward Available!"
+      body: "Login now to claim your daily reward!"
+    friend_online:
+      title: "👋 {friend} is online!"
+      body: "Say hi and play together!"
+    tournament_start:
+      title: "🏆 Tournament Starting!"
+      body: "{tournament} is starting in 5 minutes!"
+    level_up:
+      title: "🎉 Level Up!"
+      body: "You reached level {level}! Keep going!"
+    achievement_unlock:
+      title: "🏅 Achievement Unlocked!"
+      body: "You unlocked {achievement}!"
+    referral_complete:
+      title: "🎊 Your Friend Joined!"
+      body: "{friend} joined using your referral code! You earned {reward}!"
+
+# ============================================================
+# USER ACQUISITION CHANNELS
+# ============================================================
+
+acquisition:
+  channels:
+    organic:
+      enabled: true
+      strategy:
+        - "SEO"
+        - "Content Marketing"
+        - "Social Media"
+        - "Community Building"
+    paid:
+      enabled: false
+      strategy:
+        - "Google Ads"
+        - "Facebook Ads"
+        - "TikTok Ads"
+        - "Influencer Marketing"
+    referral:
+      enabled: true
+      strategy:
+        - "Friend Invites"
+        - "Social Sharing"
+        - "Referral Codes"
+        - "Community Contests"
+    viral:
+      enabled: true
+      strategy:
+        - "Shareable Content"
+        - "User Generated Content"
+        - "Social Challenges"
+        - "Viral Loops"
+
+# ============================================================
+# RETENTION STRATEGIES
+# ============================================================
+
+retention:
+  d1: 40%
+  d7: 20%
+  d30: 10%
+  strategies:
+    - "Daily Rewards"
+    - "Push Notifications"
+    - "Social Features"
+    - "Regular Content Updates"
+    - "Events & Tournaments"
+    - "Progression Systems"
+    - "Community Building"
+    - "Personalization"
+
+# ============================================================
+# MONETIZATION
+# ============================================================
+
+monetization:
+  revenue_streams:
+    - "Cosmetics & Skins"
+    - "Season Pass"
+    - "Premium Currency"
+    - "Battle Pass"
+    - "Tournament Entry Fees"
+    - "Creator Marketplace"
+    - "Premium Worlds"
+    - "Ad Revenue"
+    - "Sponsorships"
+  pricing:
+    currency_pack_1: "100 Gems — $0.99"
+    currency_pack_2: "500 Gems — $4.99"
+    currency_pack_3: "1200 Gems — $9.99"
+    currency_pack_4: "3000 Gems — $19.99"
+    currency_pack_5: "8000 Gems — $49.99"
+    season_pass: "$9.99 / month"
