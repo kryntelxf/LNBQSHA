@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LNBQSHA Metaverse — Avatar Studio</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #05050a;
+            color: #e0e0e0;
+            min-height: 100vh;
+        }
+        .header {
+            padding: 24px 32px;
+            border-bottom: 1px solid #1a1a2e;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header .logo { font-size: 20px; font-weight: 700; color: #7c3aed; }
+        .header .logo span { color: #e0e0e0; }
+        .header .back { color: #666; text-decoration: none; font-size: 14px; }
+        .header .back:hover { color: #a78bfa; }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+        .avatar-preview {
+            background: #0a0a12;
+            border: 1px solid #1a1a2e;
+            border-radius: 16px;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 500px;
+        }
+        .avatar-preview .avatar-container {
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle at 50% 20%, rgba(124, 58, 237, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 120px;
+            margin-bottom: 24px;
+            transition: all 0.3s;
+        }
+        .avatar-preview .avatar-name { font-size: 20px; font-weight: 600; margin-bottom: 4px; }
+        .avatar-preview .avatar-title { color: #666; font-size: 14px; }
+        .controls {
+            background: #0a0a12;
+            border: 1px solid #1a1a2e;
+            border-radius: 16px;
+            padding: 32px;
+        }
+        .controls h2 { font-size: 20px; font-weight: 600; margin-bottom: 24px; }
+        .control-group { margin-bottom: 24px; }
+        .control-group label { display: block; font-size: 13px; color: #999; margin-bottom: 8px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+        .control-group .options { display: flex; flex-wrap: wrap; gap: 8px; }
+        .control-group .options button {
+            padding: 8px 16px;
+            background: #1a1a2e;
+            border: 1px solid #2a2a3e;
+            border-radius: 8px;
+            color: #999;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.3s;
+        }
+        .control-group .options button:hover { border-color: #7c3aed; color: #e0e0e0; }
+        .control-group .options button.active { background: #7c3aed; border-color: #7c3aed; color: #fff; }
+        .control-group .color-options { display: flex; gap: 12px; flex-wrap: wrap; }
+        .control-group .color-options button {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .control-group .color-options button:hover { transform: scale(1.1); }
+        .control-group .color-options button.active { border-color: #fff; box-shadow: 0 0 20px rgba(124, 58, 237, 0.5); }
+        .btn-save {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #7c3aed, #6d28d9);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 8px;
+        }
+        .btn-save:hover { transform: scale(1.02); box-shadow: 0 0 30px rgba(124, 58, 237, 0.5); }
+        @media (max-width: 768px) {
+            .container { grid-template-columns: 1fr; }
+            .avatar-preview .avatar-container { width: 200px; height: 200px; font-size: 80px; }
+            .header { padding: 16px; flex-direction: column; gap: 8px; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">LNB<span>QSHA</span> <span style="font-size:14px;color:#666;font-weight:400;">Avatar Studio</span></div>
+        <a href="world.html" class="back">← Back to World</a>
+    </header>
+
+    <div class="container">
+        <div class="avatar-preview">
+            <div class="avatar-container" id="avatarPreview">🧑</div>
+            <div class="avatar-name" id="avatarName">Explorer</div>
+            <div class="avatar-title" id="avatarTitle">Level 1 • 0 XP</div>
+        </div>
+
+        <div class="controls">
+            <h2>🎨 Customize Your Avatar</h2>
+
+            <div class="control-group">
+                <label>Style</label>
+                <div class="options">
+                    <button class="active" onclick="setAvatar('🧑', 'Explorer')">🧑 Explorer</button>
+                    <button onclick="setAvatar('🧙', 'Wizard')">🧙 Wizard</button>
+                    <button onclick="setAvatar('🦸', 'Hero')">🦸 Hero</button>
+                    <button onclick="setAvatar('🧝', 'Elf')">🧝 Elf</button>
+                    <button onclick="setAvatar('🤖', 'Robot')">🤖 Robot</button>
+                    <button onclick="setAvatar('👾', 'Alien')">👾 Alien</button>
+                    <button onclick="setAvatar('🧛', 'Vampire')">🧛 Vampire</button>
+                    <button onclick="setAvatar('🧟', 'Zombie')">🧟 Zombie</button>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label>Color Theme</label>
+                <div class="color-options">
+                    <button style="background:#7c3aed;" class="active" onclick="setColor('#7c3aed')"></button>
+                    <button style="background:#ec4899;" onclick="setColor('#ec4899')"></button>
+                    <button style="background:#34d399;" onclick="setColor('#34d399')"></button>
+                    <button style="background:#60a5fa;" onclick="setColor('#60a5fa')"></button>
+                    <button style="background:#fbbf24;" onclick="setColor('#fbbf24')"></button>
+                    <button style="background:#f87171;" onclick="setColor('#f87171')"></button>
+                    <button style="background:#a78bfa;" onclick="setColor('#a78bfa')"></button>
+                    <button style="background:#f472b6;" onclick="setColor('#f472b6')"></button>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label>Title</label>
+                <div class="options">
+                    <button onclick="setTitle('Explorer')">Explorer</button>
+                    <button onclick="setTitle('Warrior')">Warrior</button>
+                    <button onclick="setTitle('Mage')">Mage</button>
+                    <button onclick="setTitle('Rogue')">Rogue</button>
+                    <button onclick="setTitle('Guardian')">Guardian</button>
+                    <button onclick="setTitle('Legend')">Legend</button>
+                </div>
+            </div>
+
+            <button class="btn-save" onclick="saveAvatar()">💾 Save Avatar</button>
+        </div>
+    </div>
+
+    <script>
+        let currentAvatar = { emoji: '🧑', name: 'Explorer', color: '#7c3aed', title: 'Explorer' };
+
+        function setAvatar(emoji, name) {
+            currentAvatar.emoji = emoji;
+            currentAvatar.name = name;
+            document.getElementById('avatarPreview').textContent = emoji;
+            document.getElementById('avatarName').textContent = name;
+            document.querySelectorAll('.options button').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        function setColor(color) {
+            currentAvatar.color = color;
+            document.querySelectorAll('.color-options button').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById('avatarPreview').style.boxShadow = `0 0 60px ${color}33`;
+        }
+
+        function setTitle(title) {
+            currentAvatar.title = title;
+            document.getElementById('avatarTitle').textContent = `${title} • Level 1 • 0 XP`;
+            document.querySelectorAll('.options button').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        function saveAvatar() {
+            alert(`✅ Avatar saved!\n\n${currentAvatar.emoji} ${currentAvatar.name}\n${currentAvatar.title}\nColor: ${currentAvatar.color}`);
+        }
+
+        // Initialize with default glow
+        document.getElementById('avatarPreview').style.boxShadow = '0 0 60px #7c3aed33';
+    </script>
+</body>
+</html>
