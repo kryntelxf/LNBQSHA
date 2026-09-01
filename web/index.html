@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LNBQSHA — Global Social Game Universe</title>
+    <style>
+        /* ============================================================
+           RESET & BASE
+           ============================================================ */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #05050a;
+            color: #e0e0e0;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        a { color: #7c3aed; text-decoration: none; }
+        a:hover { color: #a78bfa; }
+
+        /* ============================================================
+           ANIMATIONS
+           ============================================================ */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-slide { animation: slideUp 0.8s ease-out forwards; }
+        .delay-1 { animation-delay: 0.2s; opacity: 0; }
+        .delay-2 { animation-delay: 0.4s; opacity: 0; }
+        .delay-3 { animation-delay: 0.6s; opacity: 0; }
+
+        /* ============================================================
+           HERO
+           ============================================================ */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 40px 20px;
+            background: radial-gradient(ellipse at 30% 20%, rgba(124, 58, 237, 0.15) 0%, transparent 60%),
+                        radial-gradient(ellipse at 70% 80%, rgba(236, 72, 153, 0.08) 0%, transparent 50%),
+                        #05050a;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%237c3aed' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+        .hero-content { position: relative; z-index: 1; max-width: 800px; }
+        .hero .badge {
+            display: inline-block;
+            padding: 6px 20px;
+            border-radius: 20px;
+            background: rgba(124, 58, 237, 0.2);
+            color: #a78bfa;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            border: 1px solid rgba(124, 58, 237, 0.3);
+            margin-bottom: 24px;
+        }
+        .hero h1 {
+            font-size: clamp(48px, 10vw, 96px);
+            font-weight: 800;
+            line-height: 1.1;
+            background: linear-gradient(135deg, #7c3aed, #ec4899, #7c3aed);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientMove 6s ease infinite;
+        }
+        .hero h1 .glow {
+            text-shadow: 0 0 80px rgba(124, 58, 237, 0.3);
+        }
+        .hero p {
+            font-size: clamp(18px, 2.5vw, 24px);
+            color: #999;
+            max-width: 600px;
+            margin: 24px auto 32px;
+        }
+        .hero .cta-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            justify-content: center;
+        }
+        .btn-primary {
+            display: inline-block;
+            padding: 14px 40px;
+            background: linear-gradient(135deg, #7c3aed, #6d28d9);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 0 30px rgba(124, 58, 237, 0.3);
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 50px rgba(124, 58, 237, 0.5);
+        }
+        .btn-secondary {
+            display: inline-block;
+            padding: 14px 40px;
+            background: transparent;
+            color: #e0e0e0;
+            border: 1px solid #333;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-secondary:hover {
+            border-color: #7c3aed;
+            color: #a78bfa;
+        }
+
+        /* ============================================================
+           FEATURES
+           ============================================================ */
+        .features {
+            padding: 80px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .features h2 {
+            text-align: center;
+            font-size: clamp(32px, 4vw, 48px);
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+        .features .subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 18px;
+            margin-bottom: 48px;
+        }
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+        }
+        .feature-card {
+            background: #0f0f1a;
+            border: 1px solid #1a1a2e;
+            border-radius: 16px;
+            padding: 32px 24px;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        .feature-card:hover {
+            transform: translateY(-8px);
+            border-color: #7c3aed;
+            box-shadow: 0 8px 40px rgba(124, 58, 237, 0.1);
+        }
+        .feature-card .icon {
+            font-size: 40px;
+            margin-bottom: 16px;
+        }
+        .feature-card h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .feature-card p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        /* ============================================================
+           STATS
+           ============================================================ */
+        .stats-section {
+            padding: 60px 20px;
+            background: #0a0a12;
+            border-top: 1px solid #1a1a2e;
+            border-bottom: 1px solid #1a1a2e;
+        }
+        .stats-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 32px;
+            text-align: center;
+        }
+        .stats-grid .stat .value {
+            font-size: 36px;
+            font-weight: 700;
+            color: #7c3aed;
+        }
+        .stats-grid .stat .label {
+            color: #666;
+            font-size: 14px;
+            margin-top: 4px;
+        }
+
+        /* ============================================================
+           HOW IT WORKS
+           ============================================================ */
+        .how-it-works {
+            padding: 80px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .how-it-works h2 {
+            text-align: center;
+            font-size: clamp(32px, 4vw, 48px);
+            font-weight: 700;
+            margin-bottom: 48px;
+        }
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 32px;
+            counter-reset: step;
+        }
+        .step {
+            text-align: center;
+            counter-increment: step;
+            position: relative;
+        }
+        .step::before {
+            content: counter(step);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #7c3aed, #6d28d9);
+            color: #fff;
+            font-size: 20px;
+            font-weight: 700;
+            margin: 0 auto 16px;
+        }
+        .step h3 { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+        .step p { color: #666; font-size: 14px; }
+
+        /* ============================================================
+           CTA
+           ============================================================ */
+        .cta-section {
+            padding: 80px 20px;
+            text-align: center;
+            background: radial-gradient(ellipse at center, rgba(124, 58, 237, 0.1) 0%, transparent 70%);
+        }
+        .cta-section h2 {
+            font-size: clamp(28px, 3.5vw, 48px);
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+        .cta-section p {
+            color: #666;
+            font-size: 18px;
+            max-width: 500px;
+            margin: 0 auto 32px;
+        }
+
+        /* ============================================================
+           FOOTER
+           ============================================================ */
+        .footer {
+            padding: 40px 20px;
+            text-align: center;
+            border-top: 1px solid #1a1a2e;
+            color: #444;
+            font-size: 14px;
+        }
+        .footer .links { margin-bottom: 16px; }
+        .footer .links a { color: #666; margin: 0 12px; font-size: 14px; }
+        .footer .links a:hover { color: #a78bfa; }
+
+        /* ============================================================
+           RESPONSIVE
+           ============================================================ */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 40px; }
+            .features-grid { grid-template-columns: 1fr 1fr; }
+            .steps { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 480px) {
+            .features-grid { grid-template-columns: 1fr; }
+            .hero .cta-group { flex-direction: column; align-items: center; }
+            .btn-primary, .btn-secondary { width: 100%; max-width: 300px; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============================================================
+    HERO
+    ============================================================ -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="badge animate-slide">🚀 NOW IN DEVELOPMENT</div>
+            <h1 class="animate-slide delay-1">
+                <span class="glow">LNBQSHA</span>
+            </h1>
+            <p class="animate-slide delay-2">
+                The Global Social Game Universe where <strong style="color:#a78bfa;">Play</strong>, 
+                <strong style="color:#f472b6;">Social</strong>, 
+                <strong style="color:#60a5fa;">Create</strong>, and 
+                <strong style="color:#34d399;">Compete</strong> become one experience.
+            </p>
+            <div class="cta-group animate-slide delay-3">
+                <button class="btn-primary" onclick="window.location.href='dashboard.html'">🎮 Launch App</button>
+                <button class="btn-secondary" onclick="document.getElementById('features').scrollIntoView({behavior:'smooth'})">Learn More ↓</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+    STATS
+    ============================================================ -->
+    <section class="stats-section">
+        <div class="stats-grid" id="statsContainer">
+            <div class="stat"><div class="value" id="statPlayers">0</div><div class="label">Total Players</div></div>
+            <div class="stat"><div class="value" id="statOnline">0</div><div class="label">Online Now</div></div>
+            <div class="stat"><div class="value" id="statMatches">0</div><div class="label">Matches Played</div></div>
+            <div class="stat"><div class="value" id="statRPC">0</div><div class="label">RPC Calls</div></div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+    FEATURES
+    ============================================================ -->
+    <section class="features" id="features">
+        <h2>One Universe. Infinite Worlds.</h2>
+        <p class="subtitle">Everything you need to build, play, and connect.</p>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="icon">🎮</div>
+                <h3>Play</h3>
+                <p>Multiplayer games like Obstacle Rush with real-time action and leaderboards.</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">👥</div>
+                <h3>Social</h3>
+                <p>Friends, parties, clans, and global chat. Connect with players worldwide.</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">🛠️</div>
+                <h3>Create</h3>
+                <p>Build custom games, worlds, and experiences. Be a creator.</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">🏆</div>
+                <h3>Compete</h3>
+                <p>Tournaments, leaderboards, and battle passes. Prove your skill.</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">💰</div>
+                <h3>Economy</h3>
+                <p>Earn, trade, and spend. A player-driven economy with real value.</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">📱</div>
+                <h3>Connected</h3>
+                <p>Play anywhere. Web, mobile, and desktop. Your account, your world.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+    HOW IT WORKS
+    ============================================================ -->
+    <section class="how-it-works">
+        <h2>How It Works</h2>
+        <div class="steps">
+            <div class="step">
+                <h3>Discover</h3>
+                <p>Find games, friends, and communities that match your vibe.</p>
+            </div>
+            <div class="step">
+                <h3>Play</h3>
+                <p>Jump into matches, tournaments, and social experiences.</p>
+            </div>
+            <div class="step">
+                <h3>Connect</h3>
+                <p>Chat, party, and build friendships that last beyond the game.</p>
+            </div>
+            <div class="step">
+                <h3>Create</h3>
+                <p>Build your own worlds, games, and content for others to enjoy.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+    CTA
+    ============================================================ -->
+    <section class="cta-section">
+        <h2>Ready to Join the Universe?</h2>
+        <p>LNBQSHA is growing every day. Be part of something bigger.</p>
+        <button class="btn-primary" onclick="window.location.href='dashboard.html'">🚀 Launch App</button>
+    </section>
+
+    <!-- ============================================================
+    FOOTER
+    ============================================================ -->
+    <footer class="footer">
+        <div class="links">
+            <a href="#">Home</a>
+            <a href="#">Games</a>
+            <a href="#">Community</a>
+            <a href="#">About</a>
+            <a href="#">Privacy</a>
+            <a href="#">Terms</a>
+        </div>
+        <p>© 2026 LNBQSHA — Global Social Game Universe. Built with ❤️</p>
+    </footer>
+
+    <!-- ============================================================
+    SCRIPT — Real-time Stats
+    ============================================================ -->
+    <script>
+        // Simulate real-time stats
+        function updateStats() {
+            const base = 1000;
+            const random = () => Math.floor(Math.random() * 200) + 50;
+            
+            document.getElementById('statPlayers').textContent = (base + Math.floor(Math.random() * 500)).toLocaleString();
+            document.getElementById('statOnline').textContent = (Math.floor(Math.random() * 200) + 20).toLocaleString();
+            document.getElementById('statMatches').textContent = (base * 10 + Math.floor(Math.random() * 1000)).toLocaleString();
+            document.getElementById('statRPC').textContent = (base * 100 + Math.floor(Math.random() * 10000)).toLocaleString();
+        }
+
+        // Initial load
+        updateStats();
+        // Update every 5 seconds
+        setInterval(updateStats, 5000);
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) target.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+    </script>
+</body>
+  </html>
