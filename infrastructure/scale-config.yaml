@@ -1,0 +1,257 @@
+# ============================================================
+# LNBQSHA — Scalability & Infrastructure
+# Configuration for 1 million users
+# ============================================================
+
+version: '3.8'
+
+# ============================================================
+# CORE SERVICES
+# ============================================================
+
+services:
+  # ==========================================================
+  # LOAD BALANCER (HAProxy)
+  # ==========================================================
+  lb:
+    image: haproxy:latest
+    container_name: lnbqsha-lb
+    volumes:
+      - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - nakama-1
+      - nakama-2
+      - nakama-3
+    restart: always
+    networks:
+      - lnbqsha-network
+
+  # ==========================================================
+  # NAKAMA CLUSTER (3 Nodes)
+  # ==========================================================
+  nakama-1:
+    image: heroiclabs/nakama:3.37.0
+    container_name: lnbqsha-nakama-1
+    environment:
+      - NAKAMA_NODE_NAME=nakama-1
+      - NAKAMA_CLUSTER_NODES=nakama-1:7349,nakama-2:7349,nakama-3:7349
+      - NAKAMA_DATABASE_ADDRESS=postgres:localdb@postgres:5432/nakama
+      - NAKAMA_LOGGER_LEVEL=INFO
+      - NAKAMA_SESSION_TOKEN_EXPIRY_SEC=7200
+    volumes:
+      - ./data/modules:/nakama/data/modules
+    ports:
+      - "7350-7352:7350"
+    depends_on:
+      - postgres
+      - redis
+    restart: always
+    networks:
+      - lnbqsha-network
+
+  nakama-2:
+    image: heroiclabs/nakama:3.37.0
+    container_name: lnbqsha-nakama-2
+    environment:
+      - NAKAMA_NODE_NAME=nakama-2
+      - NAKAMA_CLUSTER_NODES=nakama-1:7349,nakama-2:7349,nakama-3:7349
+      - NAKAMA_DATABASE_ADDRESS=postgres:localdb@postgres:5432/nakama
+      - NAKAMA_LOGGER_LEVEL=INFO
+      - NAKAMA_SESSION_TOKEN_EXPIRY_SEC=7200
+    volumes:
+      - ./data/modules:/nakama/data/modules
+    ports:
+      - "7353-7355:7350"
+    depends_on:
+      - postgres
+      - redis
+    restart: always
+    networks:
+      - lnbqsha-network
+
+  nakama-3:
+    image: heroiclabs/nakama:3.37.0
+    container_name: lnbqsha-nakama-3
+    environment:
+      - NAKAMA_NODE_NAME=nakama-3
+      - NAKAMA_CLUSTER_NODES=nakama-1:7349,nakama-2:7349,nakama-3:7349
+      - NAKAMA_DATABASE_ADDRESS=postgres:localdb@postgres:5432/nakama
+      - NAKAMA_LOGGER_LEVEL=INFO
+      - NAKAMA_SESSION_TOKEN_EXPIRY_SEC=7200
+    volumes:
+      - ./data/modules:/nakama/data/modules
+    ports:
+      - "7356-7358:7350"
+    depends_on:
+      - postgres
+      - redis
+    restart: always
+    networks:
+      - lnbqsha-network
+
+  # ==========================================================
+  # DATABASE (PostgreSQL + Replica)
+  # ==========================================================
+  postgres-primary:
+    image: postgres:16.8-alpine
+    container_name: lnbqsha-postgres-primary
+    environment:
+      POSTGRES_DB: nakama
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-localdb}
+    volumes:
+      - postgres_primary_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: always
+    networks:
+      - lnbqsha-network
+
+  postgres-replica:
+    image: postgres:16.8-alpine
+    container_name: lnbqsha-postgres-replica
+    environment:
+      POSTGRES_DB: nakama
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-localdb}
+    volumes:
+      - postgres_replica_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    depends_on:
+      - postgres-primary
+    restart: always
+    networks:
+      - lnbqsha-network
+
+  # ==========================================================
+  # CACHE (Redis)
+  # ==========================================================
+  redis:
+    image: redis:7-alpine
+    container_name: lnbqsha-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: always
+    networks:
+      - lnbqsha-network
+
+  # ==========================================================
+  # MESSAGE QUEUE (RabbitMQ)
+  # ==========================================================
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: lnbqsha-rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-admin}
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    restart: always
+    networks:
+      - lnbqsha-network
+
+  # ==========================================================
+  # MONITORING (Prometheus + Grafana)
+  # ==========================================================
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: lnbqsha-prometheus
+    volumes:
+      - ./infrastructure/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    ports:
+      - "9090:9090"
+    restart: always
+    networks:
+      - lnbqsha-network
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: lnbqsha-grafana
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD:-admin}
+    volumes:
+      - grafana_data:/var/lib/grafana
+    ports:
+      - "3000:3000"
+    restart: always
+    networks:
+      - lnbqsha-network
+    depends_on:
+      - prometheus
+
+  # ==========================================================
+  # LOGGING (Elasticsearch + Kibana)
+  # ==========================================================
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.10.0
+    container_name: lnbqsha-elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+    restart: always
+    networks:
+      - lnbqsha-network
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.10.0
+    container_name: lnbqsha-kibana
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    ports:
+      - "5601:5601"
+    restart: always
+    networks:
+      - lnbqsha-network
+    depends_on:
+      - elasticsearch
+
+# ============================================================
+# VOLUMES
+# ============================================================
+
+volumes:
+  postgres_primary_data:
+  postgres_replica_data:
+  redis_data:
+  rabbitmq_data:
+  prometheus_data:
+  grafana_data:
+  elasticsearch_data:
+
+# ============================================================
+# NETWORKS
+# ============================================================
+
+networks:
+  lnbqsha-network:
+    driver: bridge
+
+# ============================================================
+# DEPLOYMENT NOTES
+# ============================================================
+
+# For 1 million user scale:
+# 1. Use Kubernetes for orchestration
+# 2. Use Cloudflare for CDN & DDoS protection
+# 3. Use database sharding for write scalability
+# 4. Use read replicas for query scalability
+# 5. Use Redis for session caching & hot data
+# 6. Use RabbitMQ for event-driven architecture
+# 7. Use Elasticsearch for log aggregation
+# 8. Use Prometheus + Grafana for monitoring
+# 9. Use auto-scaling for Nakama nodes
+# 10. Use multi-region deployment for low latency
