@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LNBQSHA — Admin Dashboard</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0a0a0f; color: #e0e0e0; }
+        .sidebar { position: fixed; left: 0; top: 0; width: 220px; height: 100%; background: #12121a; border-right: 1px solid #1a1a2e; padding: 24px 16px; }
+        .sidebar .logo { font-size: 20px; font-weight: 700; color: #7c3aed; margin-bottom: 32px; }
+        .sidebar .logo span { color: #e0e0e0; }
+        .sidebar nav a { display: block; padding: 10px 16px; color: #888; text-decoration: none; border-radius: 8px; margin-bottom: 4px; font-size: 14px; }
+        .sidebar nav a:hover, .sidebar nav a.active { background: #1a1a2e; color: #fff; }
+        .main { margin-left: 220px; padding: 24px 32px; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; }
+        .header h1 { font-size: 28px; font-weight: 600; }
+        .header .stats { display: flex; gap: 24px; }
+        .header .stats .stat { text-align: center; }
+        .header .stats .stat .value { font-size: 24px; font-weight: 700; color: #7c3aed; }
+        .header .stats .stat .label { font-size: 12px; color: #666; text-transform: uppercase; letter-spacing: 0.5px; }
+        .card { background: #12121a; border: 1px solid #1a1a2e; border-radius: 12px; padding: 20px; margin-bottom: 24px; }
+        .card h3 { font-size: 16px; font-weight: 600; margin-bottom: 16px; color: #ccc; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; }
+        .table { width: 100%; border-collapse: collapse; }
+        .table th { text-align: left; padding: 10px 12px; color: #666; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #1a1a2e; }
+        .table td { padding: 10px 12px; border-bottom: 1px solid #1a1a2e; font-size: 14px; }
+        .table tr:hover td { background: #1a1a2e; }
+        .badge { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; }
+        .badge-success { background: #064e3b; color: #34d399; }
+        .badge-warning { background: #78350f; color: #fbbf24; }
+        .badge-danger { background: #7f1d1d; color: #f87171; }
+        .badge-info { background: #1e3a5f; color: #60a5fa; }
+        .btn { display: inline-block; padding: 8px 16px; background: #7c3aed; color: #fff; border: none; border-radius: 8px; font-size: 13px; cursor: pointer; text-decoration: none; }
+        .btn:hover { background: #6d28d9; }
+        .btn-sm { padding: 4px 12px; font-size: 12px; }
+        .btn-danger { background: #dc2626; }
+        .btn-danger:hover { background: #b91c1c; }
+        .status-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 8px; }
+        .status-dot.online { background: #34d399; }
+        .status-dot.offline { background: #f87171; }
+        .status-dot.playing { background: #fbbf24; }
+        @media (max-width: 768px) { .sidebar { display: none; } .main { margin-left: 0; padding: 16px; } .grid-2, .grid-3 { grid-template-columns: 1fr; } .header { flex-direction: column; align-items: flex-start; gap: 16px; } }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo">LNB<span>QSHA</span></div>
+        <nav>
+            <a href="#" class="active">📊 Dashboard</a>
+            <a href="#">👥 Players</a>
+            <a href="#">🎮 Games</a>
+            <a href="#">💰 Economy</a>
+            <a href="#">🏆 Tournaments</a>
+            <a href="#">📝 Content</a>
+            <a href="#">⚙️ Settings</a>
+        </nav>
+    </div>
+    <div class="main">
+        <div class="header">
+            <h1>📊 Dashboard</h1>
+            <div class="stats">
+                <div class="stat"><div class="value" id="totalPlayers">0</div><div class="label">Total Players</div></div>
+                <div class="stat"><div class="value" id="onlinePlayers">0</div><div class="label">Online Now</div></div>
+                <div class="stat"><div class="value" id="activeMatches">0</div><div class="label">Active Matches</div></div>
+                <div class="stat"><div class="value" id="rpcCalls">0</div><div class="label">RPC Calls</div></div>
+            </div>
+        </div>
+
+        <div class="grid-3">
+            <div class="card"><h3>🟢 Server Status</h3><div style="font-size:14px;color:#34d399;">● Online</div><div style="font-size:12px;color:#666;margin-top:8px;">Uptime: 12h 34m</div></div>
+            <div class="card"><h3>📦 Storage</h3><div style="font-size:14px;color:#34d399;">● Healthy</div><div style="font-size:12px;color:#666;margin-top:8px;">15.2 MB used</div></div>
+            <div class="card"><h3>🔌 API</h3><div style="font-size:14px;color:#34d399;">● Operational</div><div style="font-size:12px;color:#666;margin-top:8px;">141 endpoints</div></div>
+        </div>
+
+        <div class="grid-2">
+            <div class="card">
+                <h3>👥 Recent Players</h3>
+                <table class="table">
+                    <thead><tr><th>Player</th><th>Status</th><th>Score</th><th>Action</th></tr></thead>
+                    <tbody id="recentPlayers">
+                        <tr><td>Loading...</td><td></td><td></td><td></td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card">
+                <h3>🏆 Top Leaderboard</h3>
+                <table class="table">
+                    <thead><tr><th>#</th><th>Player</th><th>Score</th></tr></thead>
+                    <tbody id="topLeaderboard">
+                        <tr><td colspan="3">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>📊 Activity Feed</h3>
+            <div id="activityFeed" style="font-size:14px;color:#888;">
+                Loading activities...
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // LNBQSHA Dashboard — Real-time data
+        const API_URL = '/v2/rpc';
+
+        async function callRpc(method, payload = {}) {
+            try {
+                const res = await fetch(`${API_URL}/${method}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                return await res.json();
+            } catch (e) { console.error(e); return null; }
+        }
+
+        async function loadDashboard() {
+            // Get server status
+            const status = await callRpc('server.status');
+            if (status) {
+                document.getElementById('totalPlayers').textContent = status.metrics?.totalPlayers || 0;
+                document.getElementById('onlinePlayers').textContent = status.metrics?.onlinePlayers || 0;
+                document.getElementById('activeMatches').textContent = status.metrics?.activeMatches || 0;
+                document.getElementById('rpcCalls').textContent = status.metrics?.totalRpcCalls || 0;
+            }
+
+            // Load leaderboard
+            const lb = await callRpc('leaderboard.get', { leaderboardId: 'obstacle_rush', limit: 5 });
+            if (lb?.entries) {
+                const tbody = document.getElementById('topLeaderboard');
+                tbody.innerHTML = lb.entries.map((e, i) =>
+                    `<tr><td>${i+1}</td><td>${e.displayName || e.username}</td><td>${e.score.toLocaleString()}</td></tr>`
+                ).join('');
+            }
+
+            // Load activity feed
+            const feed = await callRpc('social.getActivityFeed', { limit: 10 });
+            if (feed?.activities) {
+                const container = document.getElementById('activityFeed');
+                container.innerHTML = feed.activities.map(a =>
+                    `<div style="padding:8px 0;border-bottom:1px solid #1a1a2e;display:flex;justify-content:space-between;">
+                        <span>${a.username}: ${a.type.replace('_', ' ')}</span>
+                        <span style="color:#666;font-size:12px;">${new Date(a.timestamp).toLocaleTimeString()}</span>
+                    </div>`
+                ).join('') || '<span style="color:#666;">No recent activity</span>';
+            }
+
+            // Load recent players (dummy data)
+            // In production, this would call an API
+            const players = [
+                { name: 'PlayerOne', status: 'online', score: 1250 },
+                { name: 'GameMaster', status: 'playing', score: 980 },
+                { name: 'NeonRider', status: 'online', score: 750 },
+                { name: 'ShadowRunner', status: 'offline', score: 420 }
+            ];
+            const tbody = document.getElementById('recentPlayers');
+            tbody.innerHTML = players.map(p =>
+                `<tr>
+                    <td>${p.name}</td>
+                    <td><span class="status-dot ${p.status}"></span>${p.status}</td>
+                    <td>${p.score}</td>
+                    <td><button class="btn btn-sm">View</button></td>
+                </tr>`
+            ).join('');
+        }
+
+        // Refresh every 10 seconds
+        loadDashboard();
+        setInterval(loadDashboard, 10000);
+    </script>
+</body>
+                  </html>
