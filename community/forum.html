@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LNBQSHA Community — Forum</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #05050a;
+            color: #e0e0e0;
+            line-height: 1.6;
+        }
+        .header {
+            padding: 20px 32px;
+            border-bottom: 1px solid #1a1a2e;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .header .logo { font-size: 20px; font-weight: 700; color: #7c3aed; }
+        .header .logo span { color: #e0e0e0; }
+        .header .back { color: #666; text-decoration: none; font-size: 14px; }
+        .header .back:hover { color: #a78bfa; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 32px 20px; }
+        .forum-categories { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 32px; }
+        .category-card {
+            background: #0f0f1a;
+            border: 1px solid #1a1a2e;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .category-card:hover { border-color: #7c3aed; transform: translateY(-2px); }
+        .category-card .icon { font-size: 28px; margin-bottom: 8px; }
+        .category-card h3 { font-size: 14px; font-weight: 600; }
+        .category-card p { font-size: 12px; color: #666; margin-top: 4px; }
+        .forum-post {
+            background: #0f0f1a;
+            border: 1px solid #1a1a2e;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            transition: all 0.3s;
+        }
+        .forum-post:hover { border-color: #2a2a3e; }
+        .forum-post .post-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .forum-post .post-title { font-size: 16px; font-weight: 600; color: #e0e0e0; }
+        .forum-post .post-title:hover { color: #7c3aed; }
+        .forum-post .post-meta { font-size: 13px; color: #666; }
+        .forum-post .post-meta .author { color: #7c3aed; }
+        .forum-post .post-excerpt { color: #888; font-size: 14px; margin-top: 4px; }
+        .forum-post .post-stats {
+            display: flex;
+            gap: 16px;
+            margin-top: 12px;
+            font-size: 13px;
+            color: #555;
+        }
+        .forum-post .post-stats span { display: flex; align-items: center; gap: 4px; }
+        .btn-primary {
+            padding: 10px 24px;
+            background: linear-gradient(135deg, #7c3aed, #6d28d9);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-primary:hover { transform: scale(1.02); box-shadow: 0 0 30px rgba(124,58,237,0.3); }
+        .btn-secondary {
+            padding: 10px 24px;
+            background: transparent;
+            color: #e0e0e0;
+            border: 1px solid #333;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-secondary:hover { border-color: #7c3aed; color: #a78bfa; }
+        .forum-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 24px; }
+        .search-input {
+            flex: 1;
+            padding: 10px 16px;
+            background: #0f0f1a;
+            border: 1px solid #1a1a2e;
+            border-radius: 10px;
+            color: #e0e0e0;
+            font-size: 14px;
+            min-width: 200px;
+        }
+        .search-input:focus { outline: none; border-color: #7c3aed; }
+        .pagination { display: flex; gap: 8px; justify-content: center; margin-top: 24px; }
+        .pagination button {
+            padding: 8px 16px;
+            background: #0f0f1a;
+            border: 1px solid #1a1a2e;
+            border-radius: 8px;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .pagination button:hover { border-color: #7c3aed; color: #e0e0e0; }
+        .pagination button.active { background: #7c3aed; border-color: #7c3aed; color: #fff; }
+        @media (max-width: 768px) {
+            .header { padding: 16px; flex-direction: column; align-items: stretch; text-align: center; }
+            .forum-actions { flex-direction: column; }
+            .search-input { width: 100%; }
+            .forum-categories { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 480px) {
+            .forum-categories { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">💬 <span>LNBQSHA</span> <span style="font-size:14px;color:#666;font-weight:400;">Forum</span></div>
+        <a href="../metaverse/world.html" class="back">← Back to World</a>
+    </header>
+
+    <div class="container">
+        <div class="forum-actions">
+            <input class="search-input" type="text" placeholder="🔍 Search discussions...">
+            <button class="btn-primary">📝 New Post</button>
+        </div>
+
+        <div class="forum-categories">
+            <div class="category-card"><div class="icon">🎮</div><h3>Games</h3><p>Discussions about games</p></div>
+            <div class="category-card"><div class="icon">🛠️</div><h3>Development</h3><p>Game dev & creation</p></div>
+            <div class="category-card"><div class="icon">👥</div><h3>Community</h3><p>Meet & connect</p></div>
+            <div class="category-card"><div class="icon">🏆</div><h3>Tournaments</h3><p>Compete & win</p></div>
+        </div>
+
+        <div id="forumPosts">
+            <!-- Posts rendered by JavaScript -->
+        </div>
+
+        <div class="pagination" id="pagination">
+            <button class="active">1</button>
+            <button>2</button>
+            <button>3</button>
+            <button>→</button>
+        </div>
+    </div>
+
+    <script>
+        const posts = [
+            { title: '🎮 Obstacle Rush — New Update Coming!', author: 'GameMaster', category: 'Games', replies: 24, views: 342, time: '2h ago', excerpt: 'We\'re excited to announce a major update to Obstacle Rush with new levels, power-ups, and a leaderboard reset...' },
+            { title: '🛠️ How to Create Your First Game on LNBQSHA', author: 'DevTeam', category: 'Development', replies: 18, views: 567, time: '5h ago', excerpt: 'A complete guide to building your first game using the LNBQSHA Studio and SDK...' },
+            { title: '🏆 Weekly Tournament — Sign Up Now!', author: 'TournamentBot', category: 'Tournaments', replies: 45, views: 890, time: '1d ago', excerpt: 'The weekly tournament is open for registration! Compete for prizes and glory...' },
+            { title: '👥 Meet the Community — Player Spotlight', author: 'CommunityManager', category: 'Community', replies: 12, views: 234, time: '2d ago', excerpt: 'This week we\'re featuring ShadowRunner, one of our top players with over 1000 games played...' },
+            { title: '🎮 LNBQSHA Arcade — New Games Added!', author: 'GameMaster', category: 'Games', replies: 8, views: 156, time: '3d ago', excerpt: 'We\'ve added 5 new games to the arcade, including Block Battle and Coin Race...' },
+        ];
+
+        function renderPosts() {
+            const container = document.getElementById('forumPosts');
+            container.innerHTML = posts.map(post => `
+                <div class="forum-post">
+                    <div class="post-header">
+                        <div class="post-title">${post.title}</div>
+                        <div class="post-meta">${post.time}</div>
+                    </div>
+                    <div class="post-meta">by <span class="author">${post.author}</span> in <span style="color:#666;">${post.category}</span></div>
+                    <div class="post-excerpt">${post.excerpt}</div>
+                    <div class="post-stats">
+                        <span>💬 ${post.replies} replies</span>
+                        <span>👁️ ${post.views} views</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        renderPosts();
+    </script>
+</body>
+  </html>
